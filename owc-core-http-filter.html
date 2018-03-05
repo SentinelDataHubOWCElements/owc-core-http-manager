@@ -1,0 +1,126 @@
+<link rel="import" href="../polymer/polymer-element.html">
+<dom-module id="owc-core-http-filter">
+    <script>
+    /**
+     * `owc-core-http-filter`
+     * This element is used to manage filters on HTTP requests which require authentication
+     *
+     * @customElement
+     * @polymer
+     * @demo demo/index.html
+     */
+    class OwcCoreHttpFilter extends Polymer.Element {
+        static get is() { return 'owc-core-http-filter'; }
+        static get properties() {
+            return {
+                exceptions = [{
+                    url: /.*\/signin/g,
+                    method: "POST"
+                }, {
+                    url: /.*\/login/g,
+                    method: "POST"
+                }, {
+                    url: /.*\/lang\/dictionary.*/g,
+                    method: "GET"
+                }, {
+                    url: /.*\/conf\/menu.json/g,
+                    method: "GET"
+                }, {
+                    url: /.*\/conf\/theme.json/g,
+                    method: "GET"
+                }, {
+                    url: /.*\/conf\/appconfig.json/g,
+                    method: "GET"
+                }, {
+                    url: /.*api\/owc\/settings\/menu/g,
+                    method: "GET"
+                }, {
+                    url: /.*api\/owc\/version/g,
+                    method: "GET"
+                }, {
+                    url: /.*api\/stub\/countries/g,
+                    method: "GET"
+                }, {
+                    url: /.*api\/stub\/signup/g,
+                    method: "POST"
+                }, {
+                    url: /.*api\/owc\/forgotpassword/g,
+                    method: "POST"
+                }, {
+                    url: /.*api\/stub\/resetpwd/g,
+                    method: "POST"
+                }, {
+                    url: /.*\/conf\/supported_languages.json/g,
+                    method: "GET"
+                }];
+
+            };
+        }
+
+        constructor() {
+            super();
+        }
+
+        /**
+         *   verify if requested url is in exceptions array
+         *
+         * @param {String} method: http request method
+         * @param {String} url: http request url
+         * @param {String} options: http request options
+         * @return {object}
+         */
+        request(method, url, options) {
+            var self = this;
+            var response = {};
+            for (var i = 0; i < self.exceptions.length; i++) {
+                var match = url.match(self.exceptions[i].url);
+                if (match && method == self.exceptions[i].method) {
+                    return {
+                        status: true,
+                        code: "",
+                        request: {
+                            method: method,
+                            url: url,
+                            options: options
+                        }
+                    };
+                }
+            }
+
+            if (!self.ctx.authenticationManager.isLogged()) {
+                self.ctx.authenticationManager.showLogin();
+                return {
+                    status: false,
+                    code: "unauthorized",
+                    request: {
+                        method: method,
+                        url: url,
+                        options: options
+                    }
+                };
+            } else {
+                if (!options) {
+                    options = {};
+                    options.headers = {};
+                } else if (!options.headers) {
+                    options.headers = {};
+                }
+
+                options.headers['Authorization'] = self.ctx.authenticationManager.basicAuthentication;
+                return {
+                    status: true,
+                    code: "",
+                    request: {
+                        method: method,
+                        url: url,
+                        options: options
+                    }
+                };
+            }
+        }
+
+    }
+
+    window.customElements.define(OwcCoreHttpFilter.is, OwcCoreHttpFilter);
+    </script>
+</dom-module>
