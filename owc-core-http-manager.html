@@ -1,5 +1,5 @@
 <link rel="import" href="../polymer/polymer-element.html">
-<link rel="import" href="../owc-core-http-filter/owc-core-http-filter.html">
+<link rel="import" href="../owc-core-http-manager/owc-core-http-filter.html">
 <dom-module id="owc-core-http-manager">
     <script>
     /**
@@ -29,7 +29,19 @@
          *  Called when the element has been created, but before property values are set and local DOM is initialized.
          */
         constructor() {
-          super();                    
+          super();       
+          this.filter = document.createElement('owc-core-http-filter');             
+        }
+
+        /**
+         *   This method is used to set application cntext to the component
+         *
+         * @param {context} application context
+         * @return {null}
+         */
+        setContext(context) {
+            this.ctx = context;        
+
         }
 
         /**
@@ -82,7 +94,7 @@
             
             var processedResponse = response;
             if (this.ctx.utils.isJsonLike(response)) {
-                processedResponse = this.ctx.utils.fromJson(response);
+                processedResponse = this.ctx.utils.fromJson(response);                
             }
             return {
                 data: processedResponse,

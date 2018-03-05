@@ -13,52 +13,71 @@
         static get is() { return 'owc-core-http-filter'; }
         static get properties() {
             return {
-                exceptions = [{
-                    url: /.*\/signin/g,
-                    method: "POST"
-                }, {
-                    url: /.*\/login/g,
-                    method: "POST"
-                }, {
-                    url: /.*\/lang\/dictionary.*/g,
-                    method: "GET"
-                }, {
-                    url: /.*\/conf\/menu.json/g,
-                    method: "GET"
-                }, {
-                    url: /.*\/conf\/theme.json/g,
-                    method: "GET"
-                }, {
-                    url: /.*\/conf\/appconfig.json/g,
-                    method: "GET"
-                }, {
-                    url: /.*api\/owc\/settings\/menu/g,
-                    method: "GET"
-                }, {
-                    url: /.*api\/owc\/version/g,
-                    method: "GET"
-                }, {
-                    url: /.*api\/stub\/countries/g,
-                    method: "GET"
-                }, {
-                    url: /.*api\/stub\/signup/g,
-                    method: "POST"
-                }, {
-                    url: /.*api\/owc\/forgotpassword/g,
-                    method: "POST"
-                }, {
-                    url: /.*api\/stub\/resetpwd/g,
-                    method: "POST"
-                }, {
-                    url: /.*\/conf\/supported_languages.json/g,
-                    method: "GET"
-                }];
+                ctx: {
+                    type: Object,
+                    value: {}
+                },
+                /* TODO: replace with configuration parameter*/
+                exceptions: {
+                    type: Array,
+                    value: [{
+                        url: /.*\/signin/g,
+                        method: "POST"
+                    }, {
+                        url: /.*\/login/g,
+                        method: "POST"
+                    }, {
+                        url: /.*\/lang\/dictionary.*/g,
+                        method: "GET"
+                    }, {
+                        url: /.*\/conf\/menu.json/g,
+                        method: "GET"
+                    }, {
+                        url: /.*\/conf\/theme.json/g,
+                        method: "GET"
+                    }, {
+                        url: /.*\/conf\/appconfig.json/g,
+                        method: "GET"
+                    }, {
+                        url: /.*api\/owc\/settings\/menu/g,
+                        method: "GET"
+                    }, {
+                        url: /.*api\/owc\/version/g,
+                        method: "GET"
+                    }, {
+                        url: /.*api\/stub\/countries/g,
+                        method: "GET"
+                    }, {
+                        url: /.*api\/stub\/signup/g,
+                        method: "POST"
+                    }, {
+                        url: /.*api\/owc\/forgotpassword/g,
+                        method: "POST"
+                    }, {
+                        url: /.*api\/stub\/resetpwd/g,
+                        method: "POST"
+                    }, {
+                        url: /.*\/conf\/supported_languages.json/g,
+                        method: "GET"
+                    }]
 
-            };
+                }
+            }
         }
 
         constructor() {
             super();
+        }
+
+        /**
+         *   This method is used to set application cntext to the component
+         *
+         * @param {context} application context
+         * @return {null}
+         */
+        setContext(context) {
+            this.ctx = context;            
+
         }
 
         /**
@@ -71,6 +90,7 @@
          */
         request(method, url, options) {
             var self = this;
+            console.log("in filter self.ctx: ",self.ctx);
             var response = {};
             for (var i = 0; i < self.exceptions.length; i++) {
                 var match = url.match(self.exceptions[i].url);
@@ -87,7 +107,9 @@
                 }
             }
 
-            if (!self.ctx.authenticationManager.isLogged()) {
+            //TODO: manage authentication component
+
+            /*if (!self.ctx.authenticationManager.isLogged()) {
                 self.ctx.authenticationManager.showLogin();
                 return {
                     status: false,
@@ -116,7 +138,7 @@
                         options: options
                     }
                 };
-            }
+            }*/
         }
 
     }
