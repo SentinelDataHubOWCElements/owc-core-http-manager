@@ -18,7 +18,7 @@
                     type: Boolean,
                     value: false
                 },
-                ctx: {
+                _ctx: {
                   type: Object,
                   value: {}
                 }
@@ -40,7 +40,7 @@
          * @return {null}
          */
         setContext(context) {
-            this.ctx = context;        
+            this._ctx = context;        
 
         }
 
@@ -65,12 +65,12 @@
             var self = this;
             var JSON_PROTECTION_PREFIX = /^\)\]\}',?\n/;
             var APPLICATION_JSON = 'application/json';
-            if (this.ctx.utils.isString(data)) {
+            if (this._ctx.utils.isString(data)) {
                 var tempData = data.replace(JSON_PROTECTION_PREFIX, '').trim();
 
                 if (tempData) {
                     var contentType = headers('Content-Type');
-                    if ((contentType && (contentType.indexOf(APPLICATION_JSON) === 0)) || self.ctx.utils.isJsonLike(tempData)) {
+                    if ((contentType && (contentType.indexOf(APPLICATION_JSON) === 0)) || self._ctx.utils.isJsonLike(tempData)) {
                         data = fromJson(tempData);
                     }
                 }
@@ -93,8 +93,8 @@
         _processResponse(response, status, xhr) {
             
             var processedResponse = response;
-            if (this.ctx.utils.isJsonLike(response)) {
-                processedResponse = this.ctx.utils.fromJson(response);                
+            if (this._ctx.utils.isJsonLike(response)) {
+                processedResponse = this._ctx.utils.fromJson(response);                
             }
             return {
                 data: processedResponse,
