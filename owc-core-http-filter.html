@@ -90,7 +90,6 @@
          */
         request(method, url, options) {
             var self = this;
-            console.log("in filter self.ctx: ",self.ctx);
             var response = {};
             for (var i = 0; i < self.exceptions.length; i++) {
                 var match = url.match(self.exceptions[i].url);
