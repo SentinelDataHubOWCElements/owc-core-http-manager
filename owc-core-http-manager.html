@@ -9,14 +9,19 @@
 			static get is() { return 'owc-core-http-manager'; }
 			static get properties() {
 				return {
-					//_ctx is assigned in the starer kit
+					//_ctx Assigned in ready function.
 				};
 			}
 
-			constructor() {
-				super();
+			/**
+			 * Use for one-time configuration of your component after local DOM is
+			 * initialized.
+			 */
+			ready() {
+				super.ready();
 				var self = this;
 				self.filter = document.createElement('owc-core-http-filter');
+				self._ctx = ApplicationContext.getInstance().context; //Context Assignment
 			}
 
 			/**
